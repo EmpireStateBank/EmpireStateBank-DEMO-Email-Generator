@@ -245,19 +245,6 @@
         });
       }
 
-      function dataURLtoBlob(dataurl){
-        const arr = dataurl.split(',');
-        const mimeMatch = arr[0].match(/:(.*?);/);
-        const mime = mimeMatch ? mimeMatch[1] : 'image/png';
-        const bstr = atob(arr[1]);
-        let n = bstr.length;
-        const u8 = new Uint8Array(n);
-        while(n--){
-          u8[n] = bstr.charCodeAt(n);
-        }
-        return new Blob([u8], { type: mime });
-      }
-
       function tryLoadFromCache(){
         try{
           const cached = localStorage.getItem(storageKey);
@@ -487,29 +474,9 @@
         copyStatus.textContent = '';
         const cloned = previewRoot.cloneNode(true);
 
-        if(logoDataUrl){
-          const img = cloned.querySelector('img');
-          if(img) img.src = logoDataUrl;
-        }
-
         const fragmentHtml = cloned.innerHTML;
         const fullHtml = '<div>' + fragmentHtml + '</div>';
         const plainText = previewRoot.textContent || '';
-
-        let imageBlob = null;
-        const imgEl = previewRoot.querySelector('img');
-        if(imgEl && imgEl.src){
-          if(imgEl.src.startsWith('data:')){
-            try { imageBlob = dataURLtoBlob(imgEl.src); } catch(e){ imageBlob = null; }
-          } else {
-            try {
-              const resp = await fetch(imgEl.src);
-              if(resp && resp.ok) imageBlob = await resp.blob();
-            } catch(e){
-              imageBlob = null;
-            }
-          }
-        }
 
         if(navigator.clipboard && window.ClipboardItem){
           try {
@@ -517,9 +484,6 @@
               'text/html': new Blob([fullHtml], { type: 'text/html' }),
               'text/plain': new Blob([plainText], { type: 'text/plain' })
             };
-            if(imageBlob){
-              items[imageBlob.type || 'image/png'] = imageBlob;
-            }
             const clipboardItem = new ClipboardItem(items);
             await navigator.clipboard.write([clipboardItem]);
             copyStatus.textContent = 'Copied — paste into Gmail (tap paste)';
@@ -565,7 +529,7 @@
         try {
           const ok = await writeHtmlAndImageToClipboard();
           if(!ok){
-            copyStatus.textContent = 'Could not place image in clipboard on this browser. Try Chrome on Android and tap this button again.';
+            copyStatus.textContent = 'Could not copy. Try Chrome on Android and tap this button again.';
           }
         } finally {
           copyBtn.disabled = false;
@@ -579,24 +543,12 @@
           const fragmentHtml = previewRoot.innerHTML;
           const fullHtml = '<div>' + fragmentHtml + '</div>';
           const plainText = previewRoot.textContent || '';
-          let imageBlob = null;
-          const img = previewRoot.querySelector('img');
-          if(img && img.src){
-            if(img.src.startsWith('data:')) imageBlob = dataURLtoBlob(img.src);
-            else {
-              try {
-                const resp = await fetch(img.src);
-                if(resp.ok) imageBlob = await resp.blob();
-              } catch(_) {}
-            }
-          }
 
           if(navigator.clipboard && window.ClipboardItem){
             const items = {
               'text/html': new Blob([fullHtml], { type: 'text/html' }),
               'text/plain': new Blob([plainText], { type: 'text/plain' })
             };
-            if(imageBlob) items[imageBlob.type || 'image/png'] = imageBlob;
             const clipboardItem = new ClipboardItem(items);
             await navigator.clipboard.write([clipboardItem]);
             e.preventDefault();
