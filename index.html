@@ -1,689 +1,549 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Email System - For withdrawal</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>EmpireStateBank — DEMO Email Generator</title>
+  <style>
+    :root{
+      --neutral:#333333;
+      --muted:#666;
+      --gold:#c99a2c; /* gold color for name/date and USD wallet */
+      --green:#1f8f4a; /* amount & success */
+      --red:#b71c1c; /* failure */
+      --bg:#f4f6f8;
+      --card-bg:#ffffff;
+      --max-width:760px;
+      --email-width:600px;
+      --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    }
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #0b0b0b 0%, #1a1a1a 100%);
-            color: #fff;
-            min-height: 100vh;
-            padding: 20px;
-        }
+    html,body{
+      height:100%;
+      margin:0;
+      font-family:var(--font-family);
+      background:linear-gradient(180deg,var(--bg),#e9eef2);
+      color:var(--neutral);
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+    }
 
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
+    .container{
+      max-width:var(--max-width);
+      margin:28px auto;
+      padding:18px;
+      box-sizing:border-box;
+      display:flex;
+      gap:20px;
+      align-items:flex-start;
+    }
 
-        header {
-            text-align: center;
-            margin-bottom: 40px;
-            padding: 30px 0;
-        }
+    /* Inputs panel */
+    .controls{
+      flex:1 1 320px;
+      min-width:260px;
+      background:var(--card-bg);
+      border-radius:10px;
+      padding:16px;
+      box-shadow:0 6px 18px rgba(16,24,40,0.06);
+    }
+    .controls h2{
+      margin:0 0 12px 0;
+      font-size:18px;
+      color:var(--neutral);
+    }
+    .field{
+      margin-bottom:12px;
+    }
+    label{
+      display:block;
+      font-size:13px;
+      margin-bottom:6px;
+      color:var(--muted);
+    }
+    input[type="text"], input[type="date"], input[type="number"], select{
+      width:100%;
+      padding:10px 12px;
+      font-size:15px;
+      border:1px solid #d6dce3;
+      border-radius:8px;
+      box-sizing:border-box;
+      outline:none;
+      color:var(--neutral);
+      background: #fff;
+    }
+    input[type="text"]:focus, input[type="date"]:focus, input[type="number"]:focus, select:focus{
+      border-color:#9fb5c9;
+      box-shadow:0 0 0 3px rgba(159,181,201,0.12);
+    }
 
-        .logo {
-            max-width: 200px;
-            height: auto;
-            margin: 0 auto 20px;
-            display: block;
-        }
+    .hint{
+      font-size:12px;
+      color:var(--muted);
+      margin-top:6px;
+    }
 
-        .tagline {
-            color: #999;
-            font-size: 14px;
-            letter-spacing: 1px;
-        }
+    /* Preview panel */
+    .preview-wrap{
+      flex:1 1 420px;
+      min-width:300px;
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+      align-items:stretch;
+    }
 
-        .content {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 30px;
-            margin-bottom: 40px;
-        }
+    .preview-label{
+      font-size:13px;
+      color:var(--muted);
+      margin-left:6px;
+    }
 
-        @media (max-width: 900px) {
-            .content {
-                grid-template-columns: 1fr;
-            }
-        }
+    /* Email preview styling (this is the content that will be copied) */
+    .email-preview{
+      background: #0d1113; /* neutral dark background around the white email card to show contrast */
+      padding:18px;
+      border-radius:10px;
+      overflow:auto;
+      -webkit-overflow-scrolling:touch;
+      user-select:text; /* make selectable on mobile */
+    }
 
-        .panel {
-            background: #1a1a1a;
-            border: 1px solid #333;
-            border-radius: 10px;
-            padding: 30px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-        }
+    .email-card{
+      max-width:var(--email-width);
+      margin:0 auto;
+      background:var(--card-bg);
+      border-radius:6px;
+      padding:28px;
+      box-sizing:border-box;
+      color:var(--neutral);
+      font-size:15px;
+      line-height:1.45;
+      -webkit-user-select:text;
+      user-select:text;
+    }
 
-        .panel h2 {
-            color: #d4af37;
-            margin-bottom: 20px;
-            font-size: 20px;
-            letter-spacing: 1px;
-        }
+    .logo{
+      text-align:center;
+      margin-bottom:14px;
+    }
 
-        .form-group {
-            margin-bottom: 20px;
-        }
+    .greeting{
+      margin:8px 0 16px 0;
+      color:var(--neutral);
+      font-size:15px;
+    }
 
-        label {
-            display: block;
-            color: #d4af37;
-            font-size: 12px;
-            font-weight: 600;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            margin-bottom: 8px;
-        }
+    .txn-sentence{
+      margin:0 0 18px 0;
+      font-size:15px;
+      color:var(--neutral);
+    }
 
-        input, textarea, select {
-            width: 100%;
-            padding: 12px 15px;
-            background: #0b0b0b;
-            border: 1px solid #333;
-            border-radius: 6px;
-            color: #fff;
-            font-family: inherit;
-            font-size: 14px;
-            transition: all 0.3s ease;
-        }
+    .transfer-details{
+      margin-top:4px;
+    }
 
-        input:focus, textarea:focus, select:focus {
-            outline: none;
-            border-color: #d4af37;
-            box-shadow: 0 0 10px rgba(212, 175, 55, 0.2);
-        }
+    .transfer-details h3{
+      margin:0 0 10px 0;
+      font-size:15px;
+    }
 
-        button {
-            width: 100%;
-            padding: 14px;
-            background: linear-gradient(135deg, #d4af37 0%, #c49a27 100%);
-            color: #0b0b0b;
-            border: none;
-            border-radius: 6px;
-            font-weight: 700;
-            font-size: 14px;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin-top: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
+    .detail-row{
+      margin:6px 0;
+      font-size:15px;
+    }
 
-        button:hover:not(:disabled) {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(212, 175, 55, 0.3);
-        }
-
-        button:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-        }
-
-        .btn-secondary {
-            background: #333;
-            color: #d4af37;
-            border: 1px solid #d4af37;
-        }
-
-        .btn-secondary:hover:not(:disabled) {
-            background: #d4af37;
-            color: #0b0b0b;
-        }
-
-        .btn-success {
-            background: linear-gradient(135deg, #4a9d4a 0%, #2d7d2d 100%);
-        }
-
-        .alert {
-            padding: 15px;
-            border-radius: 6px;
-            margin-bottom: 20px;
-            font-size: 13px;
-            display: none;
-            animation: slideIn 0.3s ease;
-        }
-
-        .alert.show {
-            display: block;
-        }
-
-        .alert.success {
-            background: #1a3a1a;
-            border: 1px solid #4a9d4a;
-            color: #7eff7e;
-        }
-
-        .alert.error {
-            background: #3a1a1a;
-            border: 1px solid #9d4a4a;
-            color: #ff7e7e;
-        }
-
-        .alert.info {
-            background: #1a2a3a;
-            border: 1px solid #4a7d9d;
-            color: #7eb8ff;
-        }
-
-        .alert.warning {
-            background: #3a3a1a;
-            border: 1px solid #9d9d4a;
-            color: #ffff7e;
-        }
-
-        .preview-container {
-            border: 2px solid #d4af37;
-            border-radius: 8px;
-            overflow: hidden;
-            max-height: 600px;
-        }
-
-        .preview-label {
-            background: #d4af37;
-            color: #0b0b0b;
-            padding: 12px 15px;
-            font-weight: 600;
-            font-size: 12px;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-        }
-
-        .preview-content {
-            padding: 0;
-            background: #f5f5f5;
-            overflow-y: auto;
-            max-height: 500px;
-        }
-
-        .preview-content iframe {
-            width: 100%;
-            height: 500px;
-            border: none;
-            background: #f5f5f5;
-        }
-
-        .button-group {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-        }
-
-        .stats {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 15px;
-            margin-bottom: 30px;
-        }
-
-        .stat-card {
-            background: #1a1a1a;
-            border: 1px solid #333;
-            border-radius: 8px;
-            padding: 20px;
-            text-align: center;
-        }
-
-        .stat-value {
-            font-size: 28px;
-            font-weight: 700;
-            color: #d4af37;
-        }
-
-        .stat-label {
-            font-size: 12px;
-            color: #999;
-            margin-top: 8px;
-        }
-
-        .footer {
-            text-align: center;
-            padding: 20px;
-            color: #666;
-            font-size: 12px;
-            margin-top: 40px;
-            border-top: 1px solid #333;
-        }
-
-        .divider {
-            height: 1px;
-            background: #333;
-            margin: 20px 0;
-        }
-
-        .badge {
-            display: inline-block;
-            background: #d4af37;
-            color: #0b0b0b;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 11px;
-            font-weight: 700;
-            margin-left: 10px;
-        }
-
-        .send-mode-warning {
-            background: #2d5a2d;
-            border: 1px solid #4a9d4a;
-            color: #7eff7e;
-            padding: 15px;
-            border-radius: 6px;
-            margin-bottom: 20px;
-            font-size: 12px;
-            line-height: 1.6;
-        }
-
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateY(-10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @media (max-width: 600px) {
-            .stats {
-                grid-template-columns: 1fr;
-            }
-            .button-group {
-                grid-template-columns: 1fr;
-            }
-            .logo {
-                max-width: 150px;
-            }
-        }
-    </style>
+    @media (max-width:900px){
+      .container{padding:12px; gap:12px; flex-direction:column;}
+      .preview-wrap{order: -1;}
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <img src="./AddText_04-11-12.53.52.png" alt="EmpireStateBank Logo" class="logo">
-            <div class="tagline">Empowering Your Financial Growth | Transaction Notification Email System</div>
-        </header>
+  <div class="container">
+    <div class="controls" aria-label="Input fields">
+      <h2>EMPIRESTATEBANK — DEMO Email Generator</h2>
 
-        <div class="stats">
-            <div class="stat-card">
-                <div class="stat-value" id="stat-templates">1</div>
-                <div class="stat-label">Email Templates</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-value" id="stat-sent">0</div>
-                <div class="stat-label">Emails Sent</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-value" id="stat-previews">0</div>
-                <div class="stat-label">Previews Generated</div>
-            </div>
-        </div>
+      <div class="field">
+        <label for="firstName">Receiver first name</label>
+        <input id="firstName" type="text" placeholder="e.g., Emmanuel" autocomplete="off" />
+      </div>
 
-        <div class="content">
-            <div class="panel">
-                <h2>📧 Email Configuration <span class="badge" id="modeBadge">Preview</span></h2>
+      <div class="field">
+        <label for="receiverName">Receiver name (full)</label>
+        <input id="receiverName" type="text" placeholder="e.g., Emmanuel Ekpa" autocomplete="off" />
+      </div>
 
-                <div id="alert" class="alert"></div>
+      <div class="field">
+        <label for="amount">Amount</label>
+        <input id="amount" type="text" inputmode="numeric" placeholder="e.g., 5,000.00" />
+        <div class="hint">Do not enter the $ symbol — it is added automatically.</div>
+      </div>
 
-                <div class="form-group">
-                    <label>Mode</label>
-                    <select id="mode" onchange="toggleMode()">
-                        <option value="preview">👁️ Preview & Test</option>
-                        <option value="send">📤 Send Email</option>
-                    </select>
-                </div>
+      <div class="field">
+        <label for="dateInput">Date</label>
+        <input id="dateInput" type="date" />
+        <div class="hint">Pick a date or type YYYY-MM-DD. It will display in full (e.g., July 28, 2026).</div>
+      </div>
 
-                <div id="sendConfigSection" style="display: none;">
-                    <div class="send-mode-warning">
-                        ✅ <strong>Connected to Formspree</strong><br>
-                        Ready to send transaction notification emails to customers instantly!
-                    </div>
+      <div class="field">
+        <label for="notificationStatus">Notification (manual)</label>
+        <select id="notificationStatus">
+          <option value="none">None</option>
+          <option value="success">Successful Transaction (green)</option>
+          <option value="failed">Transaction Failed (red)</option>
+        </select>
+        <div class="hint">Choose the notification to show in the preview. This is manual and will not change automatically.</div>
+      </div>
 
-                    <div class="form-group">
-                        <label>Send To (Customer Email)</label>
-                        <input type="email" id="toEmail" placeholder="customer@example.com">
-                    </div>
-                </div>
-
-                <div class="divider"></div>
-
-                <h2>🎯 Transaction Data</h2>
-
-                <div class="form-group">
-                    <label>Customer Name</label>
-                    <input type="text" id="customerName" placeholder="Jane Smith" value="Jane Smith">
-                </div>
-
-                <div class="form-group">
-                    <label>Recipient Name</label>
-                    <input type="text" id="recipientName" placeholder="John Doe" value="John Doe">
-                </div>
-
-                <div class="form-group">
-                    <label>Amount (₦ Naira)</label>
-                    <input type="text" id="amount" placeholder="₦5,000.00" value="₦5,000.00">
-                </div>
-
-                <div class="form-group">
-                    <label>Bank Name</label>
-                    <input type="text" id="bankName" placeholder="First Bank Nigeria" value="First Bank Nigeria">
-                </div>
-
-                <div class="form-group">
-                    <label>Transaction Date</label>
-                    <input type="date" id="transactionDate" value="2026-04-28">
-                </div>
-
-                <div class="button-group">
-                    <button onclick="previewEmail()">👁️ Preview</button>
-                    <button class="btn-secondary" onclick="copyEmailCode()">📋 Copy HTML</button>
-                </div>
-
-                <button onclick="downloadEmail()" style="margin-bottom: 10px;">⬇️ Download HTML</button>
-                
-                <button id="sendBtn" class="btn-success" onclick="sendEmailNow()" style="display: none;">
-                    <span id="sendBtnText">📤 Send Email</span>
-                </button>
-            </div>
-
-            <div class="panel">
-                <h2>👁️ Email Preview</h2>
-                <div class="preview-container">
-                    <div class="preview-label">Email Preview (Gmail-Compatible)</div>
-                    <div class="preview-content">
-                        <iframe id="previewFrame"></iframe>
-                    </div>
-                </div>
-
-                <div class="divider"></div>
-
-                <h2>ℹ️ Features</h2>
-                <div style="font-size: 13px; line-height: 1.8; color: #999;">
-                    <p>✅ <strong>Fully Responsive</strong> - Mobile & desktop</p>
-                    <p>✅ <strong>Gmail Compatible</strong> - Table-based layout</p>
-                    <p>✅ <strong>Production Ready</strong> - Black & gold theme</p>
-                    <p>✅ <strong>Dynamic Placeholders</strong> - Easy customization</p>
-                    <p>✅ <strong>Send Emails</strong> - Integrated with Formspree</p>
-                </div>
-            </div>
-        </div>
+      <div style="font-size:12px;color:var(--muted);margin-top:8px">
+        The preview updates instantly as you type. Place the PNG named exactly <strong>AddText_04-11-12.53.52.png</strong> in the same folder as this file.
+      </div>
     </div>
 
-    <div class="footer">
-        <p>© 2026 EmpireStateBank | Production-Ready Transaction Email System</p>
-        <p style="margin-top: 10px; color: #555;">✅ Preview • 📤 Send • 100% Working</p>
+    <div class="preview-wrap">
+      <div class="preview-label">Live preview — select and copy the entire card below</div>
+
+      <!-- Email preview container. Users will select and copy from here. -->
+      <div id="emailPreview" class="email-preview" role="region" aria-live="polite" tabindex="0">
+        <!-- Built by script -->
+      </div>
     </div>
+  </div>
 
-    <script>
-        const emailTemplate = `<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EmpireStateBank - Transaction Notification</title>
-</head>
-<body style="margin: 0; padding: 0; background-color: #f5f5f5; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
-    <table width="100%" border="0" cellspacing="0" cellpadding="0" style="background-color: #f5f5f5;">
-        <tr>
-            <td align="center" style="padding: 20px;">
-                <table width="100%" style="max-width: 600px; background-color: #0b0b0b; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); overflow: hidden;">
-                    <tr>
-                        <td align="center" style="padding: 40px 20px; background-color: #0b0b0b;">
-                            <img src="./AddText_04-11-12.53.52.png" alt="EmpireStateBank Logo" style="max-width: 160px; height: auto; display: block; margin: 0 auto;">
-                        </td>
-                    </tr>
-                    <tr>
-                        <td align="center" style="padding: 30px 20px 20px; background-color: #0b0b0b;">
-                            <h1 style="margin: 0; font-size: 32px; font-weight: 700; color: #d4af37; letter-spacing: 1px;">Transaction Confirmed</h1>
-                            <p style="margin: 8px 0 0 0; font-size: 14px; color: #999; letter-spacing: 0.5px;">Your funds have been successfully transferred</p>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style="padding: 30px 20px; background-color: #0b0b0b; color: #ffffff; font-size: 14px; line-height: 1.6;">
-                            <p style="margin: 0 0 20px 0; font-size: 14px;">Dear <strong style="color: #d4af37;">{{CUSTOMER_NAME}}</strong>,</p>
-                            <p style="margin: 0 0 30px 0; font-size: 14px; color: #ccc;">Your transaction has been successfully processed. Below are the details:</p>
-                            <table width="100%" border="1" cellspacing="0" cellpadding="15" style="background-color: #1a1a1a; border-color: #d4af37; border-radius: 6px; margin-bottom: 20px;">
-                                <tr>
-                                    <td style="color: #d4af37; font-weight: 600; font-size: 12px; letter-spacing: 1px; text-transform: uppercase;">Amount</td>
-                                </tr>
-                                <tr>
-                                    <td style="color: #ffffff; font-size: 18px; font-weight: 700; padding-top: 0;">{{AMOUNT}}</td>
-                                </tr>
-                            </table>
-                            <table width="100%" border="1" cellspacing="0" cellpadding="15" style="background-color: #1a1a1a; border-color: #d4af37; border-radius: 6px; margin-bottom: 20px;">
-                                <tr>
-                                    <td>
-                                        <p style="margin: 0 0 12px 0; color: #d4af37; font-weight: 600; font-size: 12px; letter-spacing: 1px; text-transform: uppercase;">Recipient Name</p>
-                                        <p style="margin: 0 0 15px 0; color: #ffffff; font-size: 16px; font-weight: 600;">{{RECIPIENT_NAME}}</p>
-                                        <p style="margin: 0 0 8px 0; color: #d4af37; font-weight: 600; font-size: 12px; letter-spacing: 1px; text-transform: uppercase;">Bank Name</p>
-                                        <p style="margin: 0 0 15px 0; color: #ffffff; font-size: 16px; font-weight: 600;">{{BANK_NAME}}</p>
-                                        <p style="margin: 0 0 8px 0; color: #d4af37; font-weight: 600; font-size: 12px; letter-spacing: 1px; text-transform: uppercase;">Transaction Date</p>
-                                        <p style="margin: 0; color: #ffffff; font-size: 16px; font-weight: 600;">{{TRANSACTION_DATE}}</p>
-                                    </td>
-                                </tr>
-                            </table>
-                            <table width="100%" border="0" cellspacing="0" cellpadding="15" style="background-color: #252525; border-left: 4px solid #d4af37; border-radius: 4px; margin-bottom: 25px;">
-                                <tr>
-                                    <td style="color: #ccc; font-size: 13px; line-height: 1.6;"><strong style="color: #d4af37;">✓ Secure:</strong> Your transaction is protected with bank-level encryption.</td>
-                                </tr>
-                            </table>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td align="center" style="padding: 0 20px 30px 20px; background-color: #0b0b0b;">
-                            <table border="0" cellspacing="0" cellpadding="0" style="background: linear-gradient(135deg, #d4af37 0%, #c49a27 100%); border-radius: 6px; display: inline-block;">
-                                <tr>
-                                    <td align="center" style="padding: 14px 40px;">
-                                        <a href="https://empirestatebank.github.io/Profile---Dashboard/" style="display: block; color: #0b0b0b; font-size: 14px; font-weight: 700; letter-spacing: 0.5px; text-decoration: none; text-transform: uppercase;">View Dashboard</a>
-                                    </td>
-                                </tr>
-                            </table>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style="padding: 0 20px; background-color: #0b0b0b;">
-                            <table width="100%" border="0" cellspacing="0" cellpadding="0">
-                                <tr>
-                                    <td style="border-top: 1px solid #333; height: 1px;"></td>
-                                </tr>
-                            </table>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style="padding: 30px 20px; background-color: #0b0b0b; text-align: center;">
-                            <p style="margin: 0 0 15px 0; font-size: 16px; font-weight: 700; color: #d4af37;">EmpireStateBank</p>
-                            <p style="margin: 0 0 20px 0; font-size: 13px; color: #999;">Empowering Your Financial Growth</p>
-                            <table border="0" cellspacing="0" cellpadding="0" style="display: inline-table; margin-bottom: 20px;">
-                                <tr>
-                                    <td style="padding: 0 10px;"><a href="https://empirestatebank.mssg.me" style="color: #d4af37; font-size: 12px; text-decoration: none;">Visit Website</a></td>
-                                    <td style="padding: 0 10px; border-left: 1px solid #d4af37;"><a href="mailto:empirevirtual99@gmail.com" style="color: #d4af37; font-size: 12px; text-decoration: none;">Contact Support</a></td>
-                                </tr>
-                            </table>
-                            <p style="margin: 0; font-size: 11px; color: #666; line-height: 1.6;">© 2026 EmpireStateBank. All rights reserved.<br>This email contains confidential information intended only for the recipient.</p>
-                        </td>
-                    </tr>
-                </table>
-            </td>
-        </tr>
-    </table>
-</body>
-</html>`;
+  <script>
+    (function(){
+      // Your provided PNG filename is first in the list so it is tried before other candidates.
+      const candidateFilenames = [
+        'AddText_04-11-12.53.52.png',
+        'empirestatebank.png',
+        'empirestatebank-logo.png',
+        'empire_logo.png',
+        'empire.png',
+        'logo.png',
+        'ESB.png',
+        'esb.png'
+      ];
 
-        const FORMSPREE_ENDPOINT = 'https://formspree.io/f/xzzeredj';
-        
-        let sentCount = 0;
-        let previewCount = 0;
+      const previewRoot = document.getElementById('emailPreview');
+      const firstNameInput = document.getElementById('firstName');
+      const receiverNameInput = document.getElementById('receiverName');
+      const amountInput = document.getElementById('amount');
+      const dateInput = document.getElementById('dateInput');
+      const notificationSelect = document.getElementById('notificationStatus');
 
-        function toggleMode() {
-            const mode = document.getElementById('mode').value;
-            const sendSection = document.getElementById('sendConfigSection');
-            const sendBtn = document.getElementById('sendBtn');
-            const modeBadge = document.getElementById('modeBadge');
-            
-            if (mode === 'send') {
-                sendSection.style.display = 'block';
-                sendBtn.style.display = 'flex';
-                modeBadge.textContent = 'Send Mode';
-                modeBadge.style.background = '#4a9d4a';
-                showAlert('✅ Production mode ready! Enter customer email and send.', 'success');
-            } else {
-                sendSection.style.display = 'none';
-                sendBtn.style.display = 'none';
-                modeBadge.textContent = 'Preview';
-                modeBadge.style.background = '#d4af37';
-            }
-        }
+      // Cache for loaded data URL
+      let logoDataUrl = null;
+      const storageKey = 'esb_logo_dataurl_v1';
 
-        function showAlert(message, type = 'info') {
-            const alert = document.getElementById('alert');
-            alert.textContent = message;
-            alert.className = 'alert show ' + type;
-            setTimeout(() => {
-                alert.classList.remove('show');
-            }, 5000);
-        }
-
-        function previewEmail() {
-            const customerName = document.getElementById('customerName').value || 'Customer';
-            const recipientName = document.getElementById('recipientName').value || 'Recipient';
-            const amount = document.getElementById('amount').value || '₦0.00';
-            const bankName = document.getElementById('bankName').value || 'Bank Name';
-            const transactionDate = document.getElementById('transactionDate').value || new Date().toISOString().split('T')[0];
-
-            let html = emailTemplate;
-            html = html.replace(/{{CUSTOMER_NAME}}/g, customerName);
-            html = html.replace(/{{RECIPIENT_NAME}}/g, recipientName);
-            html = html.replace(/{{AMOUNT}}/g, amount);
-            html = html.replace(/{{BANK_NAME}}/g, bankName);
-            html = html.replace(/{{TRANSACTION_DATE}}/g, transactionDate);
-
-            const iframe = document.getElementById('previewFrame');
-            iframe.srcdoc = html;
-
-            previewCount++;
-            document.getElementById('stat-previews').textContent = previewCount;
-
-            showAlert('✅ Email preview generated successfully!', 'success');
-        }
-
-        function copyEmailCode() {
-            const customerName = document.getElementById('customerName').value || 'Customer';
-            const recipientName = document.getElementById('recipientName').value || 'Recipient';
-            const amount = document.getElementById('amount').value || '₦0.00';
-            const bankName = document.getElementById('bankName').value || 'Bank Name';
-            const transactionDate = document.getElementById('transactionDate').value || new Date().toISOString().split('T')[0];
-
-            let html = emailTemplate;
-            html = html.replace(/{{CUSTOMER_NAME}}/g, customerName);
-            html = html.replace(/{{RECIPIENT_NAME}}/g, recipientName);
-            html = html.replace(/{{AMOUNT}}/g, amount);
-            html = html.replace(/{{BANK_NAME}}/g, bankName);
-            html = html.replace(/{{TRANSACTION_DATE}}/g, transactionDate);
-
-            navigator.clipboard.writeText(html).then(() => {
-                showAlert('✅ Email HTML copied to clipboard!', 'success');
-            }).catch(() => {
-                showAlert('❌ Failed to copy. Please try again.', 'error');
-            });
-        }
-
-        function downloadEmail() {
-            const customerName = document.getElementById('customerName').value || 'Customer';
-            const recipientName = document.getElementById('recipientName').value || 'Recipient';
-            const amount = document.getElementById('amount').value || '₦0.00';
-            const bankName = document.getElementById('bankName').value || 'Bank Name';
-            const transactionDate = document.getElementById('transactionDate').value || new Date().toISOString().split('T')[0];
-
-            let html = emailTemplate;
-            html = html.replace(/{{CUSTOMER_NAME}}/g, customerName);
-            html = html.replace(/{{RECIPIENT_NAME}}/g, recipientName);
-            html = html.replace(/{{AMOUNT}}/g, amount);
-            html = html.replace(/{{BANK_NAME}}/g, bankName);
-            html = html.replace(/{{TRANSACTION_DATE}}/g, transactionDate);
-
-            const blob = new Blob([html], { type: 'text/html' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'transaction-notification-email.html';
-            a.click();
-            URL.revokeObjectURL(url);
-
-            showAlert('⬇️ Email downloaded successfully!', 'success');
-        }
-
-        function sendEmailNow() {
-            const toEmail = document.getElementById('toEmail').value;
-            if (!toEmail) {
-                showAlert('❌ Please enter a customer email address', 'error');
-                return;
-            }
-
-            const sendBtn = document.getElementById('sendBtn');
-            const sendBtnText = document.getElementById('sendBtnText');
-            sendBtn.disabled = true;
-            sendBtnText.textContent = '⏳ Sending...';
-
-            const customerName = document.getElementById('customerName').value || 'Customer';
-            const recipientName = document.getElementById('recipientName').value || 'Recipient';
-            const amount = document.getElementById('amount').value || '₦0.00';
-            const bankName = document.getElementById('bankName').value || 'Bank Name';
-            const transactionDate = document.getElementById('transactionDate').value || new Date().toISOString().split('T')[0];
-
-            let html = emailTemplate;
-            html = html.replace(/{{CUSTOMER_NAME}}/g, customerName);
-            html = html.replace(/{{RECIPIENT_NAME}}/g, recipientName);
-            html = html.replace(/{{AMOUNT}}/g, amount);
-            html = html.replace(/{{BANK_NAME}}/g, bankName);
-            html = html.replace(/{{TRANSACTION_DATE}}/g, transactionDate);
-
-            fetch(FORMSPREE_ENDPOINT, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    email: toEmail,
-                    subject: 'Transaction Notification - EmpireStateBank',
-                    message: html
-                })
-            })
-            .then(response => {
-                if (response.ok) {
-                    showAlert('✅ Email sent successfully!', 'success');
-                    sentCount++;
-                    document.getElementById('stat-sent').textContent = sentCount;
-                } else {
-                    showAlert('❌ Failed to send email. Please try again.', 'error');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                showAlert('❌ Error sending email: ' + error.message, 'error');
-            })
-            .finally(() => {
-                sendBtn.disabled = false;
-                sendBtnText.textContent = '📤 Send Email';
-            });
-        }
-
-        // Load preview on page load
-        window.addEventListener('load', () => {
-            previewEmail();
+      // Convert blob to data URL
+      function blobToDataURL(blob){
+        return new Promise((resolve, reject) => {
+          const fr = new FileReader();
+          fr.onload = function(){ resolve(fr.result); };
+          fr.onerror = function(e){ reject(e); };
+          fr.readAsDataURL(blob);
         });
-    </script>
+      }
+
+      // Try to load from localStorage first
+      function tryLoadFromCache(){
+        try{
+          const cached = localStorage.getItem(storageKey);
+          if(cached){
+            if(cached.startsWith('data:image/')){
+              logoDataUrl = cached;
+              return true;
+            }
+          }
+        } catch(e){
+          // ignore storage errors
+        }
+        return false;
+      }
+
+      // Try fetching the PNG candidates in order
+      async function preloadLogo(){
+        if(logoDataUrl) return logoDataUrl;
+        if(tryLoadFromCache()) return logoDataUrl;
+
+        for(const name of candidateFilenames){
+          try{
+            const resp = await fetch(name, {cache: 'no-store'});
+            if(!resp.ok) continue;
+            const blob = await resp.blob();
+            if(!blob || !blob.type.startsWith('image/')) continue;
+            const dataUrl = await blobToDataURL(blob);
+            logoDataUrl = dataUrl;
+            try { localStorage.setItem(storageKey, dataUrl); } catch(e){ /* ignore */ }
+            return logoDataUrl;
+          } catch(e){
+            continue;
+          }
+        }
+        logoDataUrl = null;
+        return null;
+      }
+
+      // Format date to readable e.g., July 28, 2026
+      function formatDateForDisplay(value){
+        if(!value) return '';
+        const date = new Date(value + 'T00:00:00');
+        if(isNaN(date.getTime())) return value;
+        return date.toLocaleDateString(undefined, {year:'numeric', month:'long', day:'numeric'});
+      }
+
+      // Format amount: remove leading $ if present, trim
+      function normalizeAmountInput(raw){
+        if(!raw) return '';
+        let s = String(raw).trim();
+        if(s.startsWith('$')) s = s.slice(1).trim();
+        return s;
+      }
+
+      // Build the email preview DOM (use element creation and inline styles for copy portability)
+      function buildEmailCard(logoDataUrl, values){
+        // Clean inputs
+        const firstName = values.firstName || '';
+        const receiverName = values.receiverName || '';
+        const amountRaw = normalizeAmountInput(values.amount || '');
+        const dateRaw = values.date || '';
+        const notification = values.notification || 'none';
+
+        // Resolve colours to concrete values for inline styles
+        const goldColor = getComputedStyle(document.documentElement).getPropertyValue('--gold') || '#c99a2c';
+        const greenColor = getComputedStyle(document.documentElement).getPropertyValue('--green') || '#1f8f4a';
+        const redColor = getComputedStyle(document.documentElement).getPropertyValue('--red') || '#b71c1c';
+
+        const card = document.createElement('div');
+        card.className = 'email-card';
+        card.style.cssText = [
+          'max-width:600px',
+          'margin:0 auto',
+          'background:#ffffff',
+          'border-radius:6px',
+          'padding:28px',
+          'box-sizing:border-box',
+          'color:#222222',
+          'font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+          'font-size:15px',
+          'line-height:1.45'
+        ].join(';');
+
+        // Logo
+        const logoWrap = document.createElement('div');
+        logoWrap.style.cssText = 'text-align:center;margin-bottom:12px;';
+        if(logoDataUrl){
+          const img = document.createElement('img');
+          img.alt = 'EmpireStateBank';
+          img.src = logoDataUrl;
+          img.style.cssText = 'display:block;margin:0 auto;max-width:240px;height:auto;';
+          logoWrap.appendChild(img);
+        } else {
+          const text = document.createElement('div');
+          text.textContent = 'EMPIRESTATEBANK';
+          text.style.cssText = 'font-weight:800;color:#111;font-size:20px;letter-spacing:1px;text-align:center;';
+          logoWrap.appendChild(text);
+        }
+        card.appendChild(logoWrap);
+
+        // Notification badge (manual)
+        if(notification === 'success' || notification === 'failed'){
+          const notif = document.createElement('div');
+          notif.style.cssText = [
+            'display:inline-block',
+            'padding:8px 12px',
+            'border-radius:8px',
+            'font-weight:700',
+            'font-size:13px',
+            'margin:0 auto 12px auto',
+            'text-align:center'
+          ].join(';');
+
+          if(notification === 'success'){
+            notif.textContent = 'Successful Transaction';
+            notif.style.background = '#eaf6ee';
+            notif.style.color = greenColor;
+            notif.style.border = '1px solid rgba(31,143,74,0.12)';
+          } else {
+            notif.textContent = 'Transaction Failed';
+            notif.style.background = '#fdecec';
+            notif.style.color = redColor;
+            notif.style.border = '1px solid rgba(183,28,28,0.12)';
+          }
+          const wrap = document.createElement('div');
+          wrap.style.cssText = 'text-align:center;margin-bottom:8px;';
+          wrap.appendChild(notif);
+          card.appendChild(wrap);
+        } else {
+          // No notification selected: spacer
+          const spacer = document.createElement('div');
+          spacer.style.cssText = 'height:8px;margin-bottom:4px;';
+          card.appendChild(spacer);
+        }
+
+        // Greeting: "Hi [first name],"
+        const greeting = document.createElement('p');
+        greeting.style.cssText = 'margin:8px 0 16px 0;color:#222;font-size:15px;';
+        greeting.textContent = 'Hi' + (firstName ? ' ' + firstName + ',' : ',');
+        card.appendChild(greeting);
+
+        // Transaction sentence: $[amount] was successfully sent from your E-wallet account.
+        const txn = document.createElement('p');
+        txn.style.cssText = 'margin:0 0 18px 0;color:#222;font-size:15px;';
+        const amountSpan = document.createElement('span');
+        amountSpan.style.cssText = 'color:' + greenColor + ';font-weight:700;';
+        amountSpan.textContent = (amountRaw ? ('$' + amountRaw) : '$0.00');
+        txn.appendChild(amountSpan);
+        txn.appendChild(document.createTextNode(' was successfully sent from your E-wallet account.'));
+        card.appendChild(txn);
+
+        // Divider
+        const hr = document.createElement('div');
+        hr.style.cssText = 'height:1px;background:#e6ecef;margin:12px 0;';
+        card.appendChild(hr);
+
+        // Transfer details heading
+        const tdHeading = document.createElement('div');
+        tdHeading.style.cssText = 'font-weight:700;margin-bottom:10px;color:#222;font-size:15px;';
+        tdHeading.textContent = 'Transfer details:';
+        card.appendChild(tdHeading);
+
+        // To: USD wallet (automatic) - gold
+        const toRow = document.createElement('div');
+        toRow.style.cssText = 'margin:6px 0;font-size:15px;color:#222;';
+
+        const toLabel = document.createElement('span');
+        toLabel.style.cssText = 'font-weight:600;color:#222;';
+        toLabel.textContent = 'To: ';
+
+        const toValue = document.createElement('span');
+        toValue.style.cssText = 'color:' + goldColor + ';font-weight:700;';
+        toValue.textContent = 'USD wallet';
+
+        toRow.appendChild(toLabel);
+        toRow.appendChild(toValue);
+        card.appendChild(toRow);
+
+        // Also show Receiver name (gold) as requested earlier
+        if(receiverName){
+          const recvRow = document.createElement('div');
+          recvRow.style.cssText = 'margin:6px 0;font-size:15px;color:#222;';
+          const recvLabel = document.createElement('span');
+          recvLabel.style.cssText = 'font-weight:600;color:#222;';
+          recvLabel.textContent = 'Recipient: ';
+          const recvValue = document.createElement('span');
+          recvValue.style.cssText = 'color:' + goldColor + ';font-weight:700;';
+          recvValue.textContent = receiverName;
+          recvRow.appendChild(recvLabel);
+          recvRow.appendChild(recvValue);
+          card.appendChild(recvRow);
+        }
+
+        // Amount row (green)
+        const amtRow = document.createElement('div');
+        amtRow.style.cssText = 'margin:6px 0;font-size:15px;color:#222;';
+
+        const amtLabel = document.createElement('span');
+        amtLabel.style.cssText = 'font-weight:600;color:#222;';
+        amtLabel.textContent = 'Amount: ';
+
+        const amtValue = document.createElement('span');
+        amtValue.style.cssText = 'color:' + greenColor + ';font-weight:700;';
+        amtValue.textContent = (amountRaw ? ('$' + amountRaw) : '$0.00');
+
+        amtRow.appendChild(amtLabel);
+        amtRow.appendChild(amtValue);
+        card.appendChild(amtRow);
+
+        // Date row (gold)
+        const dateRow = document.createElement('div');
+        dateRow.style.cssText = 'margin:6px 0;font-size:15px;color:#222;';
+
+        const dateLabel = document.createElement('span');
+        dateLabel.style.cssText = 'font-weight:600;color:#222;';
+        dateLabel.textContent = 'Date: ';
+
+        const dateValue = document.createElement('span');
+        dateValue.style.cssText = 'color:' + goldColor + ';font-weight:700;';
+        dateValue.textContent = formatDateForDisplay(dateRaw) || '';
+
+        dateRow.appendChild(dateLabel);
+        dateRow.appendChild(dateValue);
+        card.appendChild(dateRow);
+
+        // Footer spacer for consistent copy
+        const footerSpacer = document.createElement('div');
+        footerSpacer.style.cssText = 'height:18px;';
+        card.appendChild(footerSpacer);
+
+        return card;
+      }
+
+      // Update preview area
+      function updatePreview(){
+        const values = {
+          firstName: firstNameInput.value.trim(),
+          receiverName: receiverNameInput.value.trim(),
+          amount: amountInput.value.trim(),
+          date: dateInput.value,
+          notification: notificationSelect.value
+        };
+
+        while(previewRoot.firstChild) previewRoot.removeChild(previewRoot.firstChild);
+
+        const card = buildEmailCard(logoDataUrl, values);
+        previewRoot.appendChild(card);
+      }
+
+      // Attach input listeners for live update
+      [firstNameInput, receiverNameInput, amountInput, dateInput, notificationSelect].forEach(input=>{
+        input.addEventListener('input', ()=> {
+          updatePreview();
+        });
+      });
+
+      (async function init(){
+        previewRoot.textContent = 'Loading preview…';
+        await preloadLogo();
+        updatePreview();
+      })();
+
+      previewRoot.addEventListener('touchstart', function(){ /* allow native long-press selection */ });
+      previewRoot.addEventListener('dragstart', e => e.preventDefault());
+      window.addEventListener('submit', function(e){ e.preventDefault(); }, true);
+
+      // Preload helper (kept below to avoid hoisting issues)
+      async function preloadLogo(){
+        if(logoDataUrl) return logoDataUrl;
+        // Try cache
+        try{
+          const cached = localStorage.getItem(storageKey);
+          if(cached && cached.startsWith('data:image/')){
+            logoDataUrl = cached;
+            return logoDataUrl;
+          }
+        }catch(e){}
+
+        for(const name of candidateFilenames){
+          try{
+            const resp = await fetch(name, {cache: 'no-store'});
+            if(!resp.ok) continue;
+            const blob = await resp.blob();
+            if(!blob || !blob.type.startsWith('image/')) continue;
+            const dataUrl = await blobToDataURL(blob);
+            logoDataUrl = dataUrl;
+            try { localStorage.setItem(storageKey, dataUrl); } catch(e){ /* ignore */ }
+            return logoDataUrl;
+          } catch(e){
+            continue;
+          }
+        }
+        logoDataUrl = null;
+        return null;
+      }
+    })();
+  </script>
 </body>
 </html>
