@@ -8,30 +8,156 @@
     :root{
       --neutral:#333333;
       --muted:#666;
-      --gold:#c99a2c;
-      --green:#1f8f4a;
-      --red:#b71c1c;
+      --gold:#c99a2c; /* gold color for name/date and USD wallet */
+      --green:#1f8f4a; /* amount & success */
+      --red:#b71c1c; /* failure */
       --bg:#f4f6f8;
       --card-bg:#ffffff;
       --max-width:760px;
       --email-width:600px;
       --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     }
-    html,body{height:100%;margin:0;font-family:var(--font-family);background:linear-gradient(180deg,var(--bg),#e9eef2);color:var(--neutral);-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;}
-    .container{max-width:var(--max-width);margin:28px auto;padding:18px;box-sizing:border-box;display:flex;gap:20px;align-items:flex-start;}
-    .controls{flex:1 1 320px;min-width:260px;background:var(--card-bg);border-radius:10px;padding:16px;box-shadow:0 6px 18px rgba(16,24,40,0.06);}
-    .controls h2{margin:0 0 12px 0;font-size:18px;color:var(--neutral);}
-    .field{margin-bottom:12px;}
-    label{display:block;font-size:13px;margin-bottom:6px;color:var(--muted);}
-    input[type="text"], input[type="date"], input[type="number"], select{width:100%;padding:10px 12px;font-size:15px;border:1px solid #d6dce3;border-radius:8px;box-sizing:border-box;outline:none;color:var(--neutral);background:#fff;}
-    input:focus, select:focus{border-color:#9fb5c9;box-shadow:0 0 0 3px rgba(159,181,201,0.12);}
-    .hint{font-size:12px;color:var(--muted);margin-top:6px;}
-    .preview-wrap{flex:1 1 420px;min-width:300px;display:flex;flex-direction:column;gap:12px;align-items:stretch;}
-    .preview-label{font-size:13px;color:var(--muted);margin-left:6px;}
-    .email-preview{background:#0d1113;padding:18px;border-radius:10px;overflow:auto;-webkit-overflow-scrolling:touch;user-select:text;}
-    .email-card{max-width:var(--email-width);margin:0 auto;background:var(--card-bg);border-radius:6px;padding:28px;box-sizing:border-box;color:var(--neutral);font-size:15px;line-height:1.45;user-select:text;}
-    @media (max-width:900px){ .container{padding:12px;gap:12px;flex-direction:column;} .preview-wrap{order:-1;} }
-    .small-note{font-size:12px;color:var(--muted);margin-top:8px}
+
+    html,body{
+      height:100%;
+      margin:0;
+      font-family:var(--font-family);
+      background:linear-gradient(180deg,var(--bg),#e9eef2);
+      color:var(--neutral);
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+    }
+
+    .container{
+      max-width:var(--max-width);
+      margin:28px auto;
+      padding:18px;
+      box-sizing:border-box;
+      display:flex;
+      gap:20px;
+      align-items:flex-start;
+    }
+
+    /* Inputs panel */
+    .controls{
+      flex:1 1 320px;
+      min-width:260px;
+      background:var(--card-bg);
+      border-radius:10px;
+      padding:16px;
+      box-shadow:0 6px 18px rgba(16,24,40,0.06);
+    }
+    .controls h2{
+      margin:0 0 12px 0;
+      font-size:18px;
+      color:var(--neutral);
+    }
+    .field{
+      margin-bottom:12px;
+    }
+    label{
+      display:block;
+      font-size:13px;
+      margin-bottom:6px;
+      color:var(--muted);
+    }
+    input[type="text"], input[type="date"], input[type="number"], select{
+      width:100%;
+      padding:10px 12px;
+      font-size:15px;
+      border:1px solid #d6dce3;
+      border-radius:8px;
+      box-sizing:border-box;
+      outline:none;
+      color:var(--neutral);
+      background: #fff;
+    }
+    input[type="text"]:focus, input[type="date"]:focus, input[type="number"]:focus, select:focus{
+      border-color:#9fb5c9;
+      box-shadow:0 0 0 3px rgba(159,181,201,0.12);
+    }
+
+    .hint{
+      font-size:12px;
+      color:var(--muted);
+      margin-top:6px;
+    }
+
+    /* Preview panel */
+    .preview-wrap{
+      flex:1 1 420px;
+      min-width:300px;
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+      align-items:stretch;
+    }
+
+    .preview-label{
+      font-size:13px;
+      color:var(--muted);
+      margin-left:6px;
+    }
+
+    /* Email preview styling (this is the content that will be copied) */
+    .email-preview{
+      background: #0d1113; /* neutral dark background around the white email card to show contrast */
+      padding:18px;
+      border-radius:10px;
+      overflow:auto;
+      -webkit-overflow-scrolling:touch;
+      user-select:text; /* make selectable on mobile */
+    }
+
+    .email-card{
+      max-width:var(--email-width);
+      margin:0 auto;
+      background:var(--card-bg);
+      border-radius:6px;
+      padding:28px;
+      box-sizing:border-box;
+      color:var(--neutral);
+      font-size:15px;
+      line-height:1.45;
+      -webkit-user-select:text;
+      user-select:text;
+    }
+
+    .logo{
+      text-align:center;
+      margin-bottom:14px;
+    }
+
+    .greeting{
+      margin:8px 0 16px 0;
+      color:var(--neutral);
+      font-size:15px;
+    }
+
+    .txn-sentence{
+      margin:0 0 18px 0;
+      font-size:15px;
+      color:var(--neutral);
+    }
+
+    .transfer-details{
+      margin-top:4px;
+    }
+
+    .transfer-details h3{
+      margin:0 0 10px 0;
+      font-size:15px;
+    }
+
+    .detail-row{
+      margin:6px 0;
+      font-size:15px;
+    }
+
+    @media (max-width:900px){
+      .container{padding:12px; gap:12px; flex-direction:column;}
+      .preview-wrap{order: -1;}
+    }
   </style>
 </head>
 <body>
@@ -71,359 +197,449 @@
         <div class="hint">Choose the notification to show in the preview. This is manual and will not change automatically.</div>
       </div>
 
-      <div class="small-note">
-        Save your PNG next to this file with the exact filename: <strong>AddText_04-11-12.53.52.png</strong>.<br>
-        To paste with the logo: select the preview, press Ctrl+C (or long-press Copy on mobile). The page will attempt to include the actual image blob in the clipboard.
+      <div style="font-size:12px;color:var(--muted);margin-top:8px">
+        The preview updates instantly as you type. Place the PNG named exactly <strong>AddText_04-11-12.53.52.png</strong> in the same folder as this file.
       </div>
     </div>
 
     <div class="preview-wrap">
       <div class="preview-label">Live preview — select and copy the entire card below</div>
-      <div id="emailPreview" class="email-preview" role="region" aria-live="polite" tabindex="0"></div>
+
+      <!-- Email preview container. Users will select and copy from here. -->
+      <div id="emailPreview" class="email-preview" role="region" aria-live="polite" tabindex="0">
+        <!-- Built by script -->
+      </div>
     </div>
   </div>
 
   <script>
-  (function(){
-    // Candidate filenames (your filename first)
-    const candidateFilenames = [
-      'AddText_04-11-12.53.52.png',
-      'empirestatebank.png',
-      'empirestatebank-logo.png',
-      'empire_logo.png',
-      'empire.png',
-      'logo.png',
-      'ESB.png',
-      'esb.png'
-    ];
+    (function(){
+      // Your provided PNG filename is first in the list so it is tried before other candidates.
+      const candidateFilenames = [
+        'AddText_04-11-12.53.52.png',
+        'empirestatebank.png',
+        'empirestatebank-logo.png',
+        'empire_logo.png',
+        'empire.png',
+        'logo.png',
+        'ESB.png',
+        'esb.png'
+      ];
 
-    const previewRoot = document.getElementById('emailPreview');
-    const firstNameInput = document.getElementById('firstName');
-    const receiverNameInput = document.getElementById('receiverName');
-    const amountInput = document.getElementById('amount');
-    const dateInput = document.getElementById('dateInput');
-    const notificationSelect = document.getElementById('notificationStatus');
+      const previewRoot = document.getElementById('emailPreview');
+      const firstNameInput = document.getElementById('firstName');
+      const receiverNameInput = document.getElementById('receiverName');
+      const amountInput = document.getElementById('amount');
+      const dateInput = document.getElementById('dateInput');
+      const notificationSelect = document.getElementById('notificationStatus');
 
-    // cache
-    let logoDataUrl = null;
-    let logoBlob = null;          // preserve blob for clipboard image
-    const storageKey = 'esb_logo_dataurl_v1';
+      // Cache for loaded data URL
+      let logoDataUrl = null;
+      const storageKey = 'esb_logo_dataurl_v1';
 
-    // Safe helper to escape text for insertion into HTML string
-    function escapeHtml(str){
-      if(!str) return '';
-      return String(str)
-        .replace(/&/g,'&amp;')
-        .replace(/</g,'&lt;')
-        .replace(/>/g,'&gt;')
-        .replace(/"/g,'&quot;')
-        .replace(/'/g,'&#39;');
-    }
+      // Convert blob to data URL
+      function blobToDataURL(blob){
+        return new Promise((resolve, reject) => {
+          const fr = new FileReader();
+          fr.onload = function(){ resolve(fr.result); };
+          fr.onerror = function(e){ reject(e); };
+          fr.readAsDataURL(blob);
+        });
+      }
 
-    // blob -> dataURL
-    function blobToDataURL(blob){
-      return new Promise((resolve,reject)=>{
-        const fr = new FileReader();
-        fr.onload = () => resolve(fr.result);
-        fr.onerror = reject;
-        fr.readAsDataURL(blob);
+      // Convert dataURL -> Blob
+      function dataURLtoBlob(dataurl){
+        const arr = dataurl.split(',');
+        const mimeMatch = arr[0].match(/:(.*?);/);
+        const mime = mimeMatch ? mimeMatch[1] : 'image/png';
+        const bstr = atob(arr[1]);
+        let n = bstr.length;
+        const u8 = new Uint8Array(n);
+        while(n--){
+          u8[n] = bstr.charCodeAt(n);
+        }
+        return new Blob([u8], { type: mime });
+      }
+
+      // Try to load from localStorage first
+      function tryLoadFromCache(){
+        try{
+          const cached = localStorage.getItem(storageKey);
+          if(cached){
+            if(cached.startsWith('data:image/')){
+              logoDataUrl = cached;
+              return true;
+            }
+          }
+        } catch(e){
+          // ignore storage errors
+        }
+        return false;
+      }
+
+      // Try fetching the PNG candidates in order
+      async function preloadLogo(){
+        if(logoDataUrl) return logoDataUrl;
+        if(tryLoadFromCache()) return logoDataUrl;
+
+        for(const name of candidateFilenames){
+          try{
+            const resp = await fetch(name, {cache: 'no-store'});
+            if(!resp.ok) continue;
+            const blob = await resp.blob();
+            if(!blob || !blob.type.startsWith('image/')) continue;
+            const dataUrl = await blobToDataURL(blob);
+            logoDataUrl = dataUrl;
+            try { localStorage.setItem(storageKey, dataUrl); } catch(e){ /* ignore */ }
+            return logoDataUrl;
+          } catch(e){
+            continue;
+          }
+        }
+        logoDataUrl = null;
+        return null;
+      }
+
+      // Format date to readable e.g., July 28, 2026
+      function formatDateForDisplay(value){
+        if(!value) return '';
+        const date = new Date(value + 'T00:00:00');
+        if(isNaN(date.getTime())) return value;
+        return date.toLocaleDateString(undefined, {year:'numeric', month:'long', day:'numeric'});
+      }
+
+      // Format amount: remove leading $ if present, trim
+      function normalizeAmountInput(raw){
+        if(!raw) return '';
+        let s = String(raw).trim();
+        if(s.startsWith('$')) s = s.slice(1).trim();
+        return s;
+      }
+
+      // Build the email preview DOM (use element creation and inline styles for copy portability)
+      function buildEmailCard(logoDataUrl, values){
+        // Clean inputs
+        const firstName = values.firstName || '';
+        const receiverName = values.receiverName || '';
+        const amountRaw = normalizeAmountInput(values.amount || '');
+        const dateRaw = values.date || '';
+        const notification = values.notification || 'none';
+
+        // Resolve colours to concrete values for inline styles
+        const goldColor = getComputedStyle(document.documentElement).getPropertyValue('--gold') || '#c99a2c';
+        const greenColor = getComputedStyle(document.documentElement).getPropertyValue('--green') || '#1f8f4a';
+        const redColor = getComputedStyle(document.documentElement).getPropertyValue('--red') || '#b71c1c';
+
+        const card = document.createElement('div');
+        card.className = 'email-card';
+        card.style.cssText = [
+          'max-width:600px',
+          'margin:0 auto',
+          'background:#ffffff',
+          'border-radius:6px',
+          'padding:28px',
+          'box-sizing:border-box',
+          'color:#222222',
+          'font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+          'font-size:15px',
+          'line-height:1.45'
+        ].join(';');
+
+        // Logo
+        const logoWrap = document.createElement('div');
+        logoWrap.style.cssText = 'text-align:center;margin-bottom:12px;';
+        if(logoDataUrl){
+          const img = document.createElement('img');
+          img.alt = 'EmpireStateBank';
+          img.src = logoDataUrl;
+          img.style.cssText = 'display:block;margin:0 auto;max-width:240px;height:auto;';
+          logoWrap.appendChild(img);
+        } else {
+          const text = document.createElement('div');
+          text.textContent = 'EMPIRESTATEBANK';
+          text.style.cssText = 'font-weight:800;color:#111;font-size:20px;letter-spacing:1px;text-align:center;';
+          logoWrap.appendChild(text);
+        }
+        card.appendChild(logoWrap);
+
+        // Notification badge (manual)
+        if(notification === 'success' || notification === 'failed'){
+          const notif = document.createElement('div');
+          notif.style.cssText = [
+            'display:inline-block',
+            'padding:8px 12px',
+            'border-radius:8px',
+            'font-weight:700',
+            'font-size:13px',
+            'margin:0 auto 12px auto',
+            'text-align:center'
+          ].join(';');
+
+          if(notification === 'success'){
+            notif.textContent = 'Successful Transaction';
+            notif.style.background = '#eaf6ee';
+            notif.style.color = greenColor;
+            notif.style.border = '1px solid rgba(31,143,74,0.12)';
+          } else {
+            notif.textContent = 'Transaction Failed';
+            notif.style.background = '#fdecec';
+            notif.style.color = redColor;
+            notif.style.border = '1px solid rgba(183,28,28,0.12)';
+          }
+          const wrap = document.createElement('div');
+          wrap.style.cssText = 'text-align:center;margin-bottom:8px;';
+          wrap.appendChild(notif);
+          card.appendChild(wrap);
+        } else {
+          // No notification selected: spacer
+          const spacer = document.createElement('div');
+          spacer.style.cssText = 'height:8px;margin-bottom:4px;';
+          card.appendChild(spacer);
+        }
+
+        // Greeting: "Hi [first name],"
+        const greeting = document.createElement('p');
+        greeting.style.cssText = 'margin:8px 0 16px 0;color:#222;font-size:15px;';
+        greeting.textContent = 'Hi' + (firstName ? ' ' + firstName + ',' : ',');
+        card.appendChild(greeting);
+
+        // Transaction sentence: $[amount] was successfully sent from your E-wallet account.
+        const txn = document.createElement('p');
+        txn.style.cssText = 'margin:0 0 18px 0;color:#222;font-size:15px;';
+        const amountSpan = document.createElement('span');
+        amountSpan.style.cssText = 'color:' + greenColor + ';font-weight:700;';
+        amountSpan.textContent = (amountRaw ? ('$' + amountRaw) : '$0.00');
+        txn.appendChild(amountSpan);
+        txn.appendChild(document.createTextNode(' was successfully sent from your E-wallet account.'));
+        card.appendChild(txn);
+
+        // Divider
+        const hr = document.createElement('div');
+        hr.style.cssText = 'height:1px;background:#e6ecef;margin:12px 0;';
+        card.appendChild(hr);
+
+        // Transfer details heading
+        const tdHeading = document.createElement('div');
+        tdHeading.style.cssText = 'font-weight:700;margin-bottom:10px;color:#222;font-size:15px;';
+        tdHeading.textContent = 'Transfer details:';
+        card.appendChild(tdHeading);
+
+        // To: USD wallet (automatic) - gold
+        const toRow = document.createElement('div');
+        toRow.style.cssText = 'margin:6px 0;font-size:15px;color:#222;';
+
+        const toLabel = document.createElement('span');
+        toLabel.style.cssText = 'font-weight:600;color:#222;';
+        toLabel.textContent = 'To: ';
+
+        const toValue = document.createElement('span');
+        toValue.style.cssText = 'color:' + goldColor + ';font-weight:700;';
+        toValue.textContent = 'USD wallet';
+
+        toRow.appendChild(toLabel);
+        toRow.appendChild(toValue);
+        card.appendChild(toRow);
+
+        // Also show Receiver name (gold) as requested earlier
+        if(receiverName){
+          const recvRow = document.createElement('div');
+          recvRow.style.cssText = 'margin:6px 0;font-size:15px;color:#222;';
+          const recvLabel = document.createElement('span');
+          recvLabel.style.cssText = 'font-weight:600;color:#222;';
+          recvLabel.textContent = 'Recipient: ';
+          const recvValue = document.createElement('span');
+          recvValue.style.cssText = 'color:' + goldColor + ';font-weight:700;';
+          recvValue.textContent = receiverName;
+          recvRow.appendChild(recvLabel);
+          recvRow.appendChild(recvValue);
+          card.appendChild(recvRow);
+        }
+
+        // Amount row (green)
+        const amtRow = document.createElement('div');
+        amtRow.style.cssText = 'margin:6px 0;font-size:15px;color:#222;';
+
+        const amtLabel = document.createElement('span');
+        amtLabel.style.cssText = 'font-weight:600;color:#222;';
+        amtLabel.textContent = 'Amount: ';
+
+        const amtValue = document.createElement('span');
+        amtValue.style.cssText = 'color:' + greenColor + ';font-weight:700;';
+        amtValue.textContent = (amountRaw ? ('$' + amountRaw) : '$0.00');
+
+        amtRow.appendChild(amtLabel);
+        amtRow.appendChild(amtValue);
+        card.appendChild(amtRow);
+
+        // Date row (gold)
+        const dateRow = document.createElement('div');
+        dateRow.style.cssText = 'margin:6px 0;font-size:15px;color:#222;';
+
+        const dateLabel = document.createElement('span');
+        dateLabel.style.cssText = 'font-weight:600;color:#222;';
+        dateLabel.textContent = 'Date: ';
+
+        const dateValue = document.createElement('span');
+        dateValue.style.cssText = 'color:' + goldColor + ';font-weight:700;';
+        dateValue.textContent = formatDateForDisplay(dateRaw) || '';
+
+        dateRow.appendChild(dateLabel);
+        dateRow.appendChild(dateValue);
+        card.appendChild(dateRow);
+
+        // Footer spacer for consistent copy
+        const footerSpacer = document.createElement('div');
+        footerSpacer.style.cssText = 'height:18px;';
+        card.appendChild(footerSpacer);
+
+        return card;
+      }
+
+      // Update preview area
+      function updatePreview(){
+        const values = {
+          firstName: firstNameInput.value.trim(),
+          receiverName: receiverNameInput.value.trim(),
+          amount: amountInput.value.trim(),
+          date: dateInput.value,
+          notification: notificationSelect.value
+        };
+
+        while(previewRoot.firstChild) previewRoot.removeChild(previewRoot.firstChild);
+
+        const card = buildEmailCard(logoDataUrl, values);
+        previewRoot.appendChild(card);
+      }
+
+      // Attach input listeners for live update
+      [firstNameInput, receiverNameInput, amountInput, dateInput, notificationSelect].forEach(input=>{
+        input.addEventListener('input', ()=> {
+          updatePreview();
+        });
       });
-    }
 
-    // Try cache
-    function tryLoadFromCache(){
-      try{
-        const cached = localStorage.getItem(storageKey);
-        if(cached && cached.startsWith('data:image/')){
-          logoDataUrl = cached;
-          return true;
-        }
-      }catch(e){}
-      return false;
-    }
+      (async function init(){
+        previewRoot.textContent = 'Loading preview…';
+        await preloadLogo();
+        updatePreview();
 
-    // Preload logo and keep blob + data url
-    async function preloadLogo(){
-      if(logoDataUrl && logoBlob) return;
-      if(tryLoadFromCache()) {
-        // cached data URL available; attempt to fetch blob if possible below
-      }
-      for(const name of candidateFilenames){
+        // COPY HANDLER: attempt to write HTML + binary image into the clipboard
+        previewRoot.addEventListener('copy', async function(e){
+          try {
+            // Build HTML fragment to write
+            // Use the preview content as the HTML for the clipboard.
+            const fragmentHtml = previewRoot.innerHTML;
+            const fullHtml = '<div>' + fragmentHtml + '</div>';
+
+            // Prepare plain text fallback
+            const plainText = previewRoot.textContent || '';
+
+            // Try to locate the first img in the preview and extract a blob from its data URL
+            let imageBlob = null;
+            const img = previewRoot.querySelector('img');
+            if(img && img.src){
+              if(img.src.startsWith('data:')){
+                imageBlob = dataURLtoBlob(img.src);
+              } else {
+                // non-data URL (unlikely): fetch it
+                try {
+                  const resp = await fetch(img.src);
+                  if(resp && resp.ok){
+                    imageBlob = await resp.blob();
+                  }
+                } catch(err){
+                  imageBlob = null;
+                }
+              }
+            }
+
+            // Try modern Clipboard API write with ClipboardItem (allows binary image + html)
+            if(navigator.clipboard && window.ClipboardItem){
+              // Build items map. Ensure MIME keys correctly set.
+              const items = {
+                // HTML and plain text as Blobs
+                'text/html': new Blob([fullHtml], { type: 'text/html' }),
+                'text/plain': new Blob([plainText], { type: 'text/plain' })
+              };
+              if(imageBlob){
+                // Use the actual image MIME type
+                items[imageBlob.type || 'image/png'] = imageBlob;
+              }
+
+              const clipboardItem = new ClipboardItem(items);
+              // Use clipboard.write - this must be called in response to user gesture (copy event qualifies)
+              await navigator.clipboard.write([clipboardItem]);
+
+              // Prevent default so browser doesn't override our clipboard content
+              e.preventDefault();
+              return;
+            }
+
+            // Fallback: attempt to populate event.clipboardData (works in many browsers when in copy event)
+            if(e.clipboardData){
+              e.clipboardData.clearData();
+              e.clipboardData.setData('text/html', fullHtml);
+              e.clipboardData.setData('text/plain', plainText);
+              // Note: event.clipboardData cannot accept binary image in some browsers
+              e.preventDefault();
+              return;
+            }
+
+            // Last-resort: let default copy happen (may not include image)
+          } catch(err){
+            // If anything fails, try to set clipboardData on event as fallback
+            try {
+              if(e.clipboardData){
+                const fragmentHtml = previewRoot.innerHTML;
+                const fullHtml = '<div>' + fragmentHtml + '</div>';
+                e.clipboardData.clearData();
+                e.clipboardData.setData('text/html', fullHtml);
+                e.clipboardData.setData('text/plain', previewRoot.textContent || '');
+                e.preventDefault();
+                return;
+              }
+            } catch(_) {
+              // ignore
+            }
+            // If all fails, do nothing and let the default clipboard behavior happen
+          }
+        }, false);
+      })();
+
+      previewRoot.addEventListener('touchstart', function(){ /* allow native long-press selection */ });
+      previewRoot.addEventListener('dragstart', e => e.preventDefault());
+      window.addEventListener('submit', function(e){ e.preventDefault(); }, true);
+
+      // Preload helper (kept below to avoid hoisting issues)
+      async function preloadLogo(){
+        if(logoDataUrl) return logoDataUrl;
+        // Try cache
         try{
-          const res = await fetch(name, {cache:'no-store'});
-          if(!res.ok) continue;
-          const blob = await res.blob();
-          if(!blob || !blob.type.startsWith('image')) continue;
-          logoBlob = blob;
-          logoDataUrl = await blobToDataURL(blob);
-          try{ localStorage.setItem(storageKey, logoDataUrl); }catch(e){}
-          return;
-        }catch(e){
-          continue;
+          const cached = localStorage.getItem(storageKey);
+          if(cached && cached.startsWith('data:image/')){
+            logoDataUrl = cached;
+            return logoDataUrl;
+          }
+        }catch(e){}
+
+        for(const name of candidateFilenames){
+          try{
+            const resp = await fetch(name, {cache: 'no-store'});
+            if(!resp.ok) continue;
+            const blob = await resp.blob();
+            if(!blob || !blob.type.startsWith('image/')) continue;
+            const dataUrl = await blobToDataURL(blob);
+            logoDataUrl = dataUrl;
+            try { localStorage.setItem(storageKey, dataUrl); } catch(e){ /* ignore */ }
+            return logoDataUrl;
+          } catch(e){
+            continue;
+          }
         }
+        logoDataUrl = null;
+        return null;
       }
-      // If we had a cached dataURL but didn't fetch a blob, create a blob from it (best-effort)
-      if(logoDataUrl && !logoBlob){
-        try{
-          const res = await fetch(logoDataUrl);
-          const b = await res.blob();
-          logoBlob = b;
-        }catch(e){
-          logoBlob = null;
-        }
-      }
-    }
-
-    // formatting helpers
-    function normalizeAmountInput(raw){ if(!raw) return ''; let s=String(raw).trim(); if(s.startsWith('$')) s=s.slice(1).trim(); return s; }
-    function formatDateForDisplay(value){ if(!value) return ''; const d=new Date(value+'T00:00:00'); if(isNaN(d)) return value; return d.toLocaleDateString(undefined,{year:'numeric',month:'long',day:'numeric'}); }
-
-    // Build DOM card (for on-screen preview)
-    function buildEmailCardDOM(values){
-      const firstName = values.firstName || '';
-      const receiverName = values.receiverName || '';
-      const amountRaw = normalizeAmountInput(values.amount || '');
-      const dateRaw = values.date || '';
-      const notification = values.notification || 'none';
-
-      const gold = getComputedStyle(document.documentElement).getPropertyValue('--gold') || '#c99a2c';
-      const green = getComputedStyle(document.documentElement).getPropertyValue('--green') || '#1f8f4a';
-      const red = getComputedStyle(document.documentElement).getPropertyValue('--red') || '#b71c1c';
-
-      const card = document.createElement('div');
-      card.className='email-card';
-      card.style.cssText = 'max-width:600px;margin:0 auto;background:#fff;border-radius:6px;padding:28px;box-sizing:border-box;color:#222;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;font-size:15px;line-height:1.45';
-
-      // logo area
-      const logoWrap = document.createElement('div');
-      logoWrap.style.cssText='text-align:center;margin-bottom:12px;';
-      if(logoDataUrl){
-        const img = document.createElement('img');
-        img.alt='EmpireStateBank';
-        img.src=logoDataUrl;
-        img.style.cssText='display:block;margin:0 auto;max-width:240px;height:auto;';
-        logoWrap.appendChild(img);
-      }else{
-        const txt = document.createElement('div');
-        txt.textContent='EMPIRESTATEBANK';
-        txt.style.cssText='font-weight:800;color:#111;font-size:20px;letter-spacing:1px;text-align:center;';
-        logoWrap.appendChild(txt);
-      }
-      card.appendChild(logoWrap);
-
-      // notification
-      if(notification==='success' || notification==='failed'){
-        const notif = document.createElement('div');
-        notif.style.cssText='display:inline-block;padding:8px 12px;border-radius:8px;font-weight:700;font-size:13px;margin:0 auto 12px auto;text-align:center;';
-        if(notification==='success'){ notif.textContent='Successful Transaction'; notif.style.background='#eaf6ee'; notif.style.color=green; notif.style.border='1px solid rgba(31,143,74,0.12)'; }
-        else { notif.textContent='Transaction Failed'; notif.style.background='#fdecec'; notif.style.color=red; notif.style.border='1px solid rgba(183,28,28,0.12)'; }
-        const w = document.createElement('div'); w.style.cssText='text-align:center;margin-bottom:8px;'; w.appendChild(notif); card.appendChild(w);
-      } else {
-        const spacer = document.createElement('div'); spacer.style.cssText='height:8px;margin-bottom:4px;'; card.appendChild(spacer);
-      }
-
-      const greeting = document.createElement('p'); greeting.style.cssText='margin:8px 0 16px 0;color:#222;font-size:15px;'; greeting.textContent = 'Hi' + (firstName ? ' ' + firstName + ',' : ','); card.appendChild(greeting);
-
-      const txn = document.createElement('p'); txn.style.cssText='margin:0 0 18px 0;color:#222;font-size:15px;';
-      const amountSpan = document.createElement('span'); amountSpan.style.cssText='color:'+green+';font-weight:700;'; amountSpan.textContent = (amountRaw ? ('$' + amountRaw) : '$0.00');
-      txn.appendChild(amountSpan); txn.appendChild(document.createTextNode(' was successfully sent from your E-wallet account.')); card.appendChild(txn);
-
-      const hr = document.createElement('div'); hr.style.cssText='height:1px;background:#e6ecef;margin:12px 0;'; card.appendChild(hr);
-
-      const tdHeading = document.createElement('div'); tdHeading.style.cssText='font-weight:700;margin-bottom:10px;color:#222;font-size:15px;'; tdHeading.textContent='Transfer details:'; card.appendChild(tdHeading);
-
-      const toRow = document.createElement('div'); toRow.style.cssText='margin:6px 0;font-size:15px;color:#222;';
-      const toLabel = document.createElement('span'); toLabel.style.cssText='font-weight:600;color:#222;'; toLabel.textContent='To: ';
-      const toValue = document.createElement('span'); toValue.style.cssText='color:'+gold+';font-weight:700;'; toValue.textContent='USD wallet';
-      toRow.appendChild(toLabel); toRow.appendChild(toValue); card.appendChild(toRow);
-
-      if(receiverName){
-        const recvRow=document.createElement('div'); recvRow.style.cssText='margin:6px 0;font-size:15px;color:#222;';
-        const recvLabel=document.createElement('span'); recvLabel.style.cssText='font-weight:600;color:#222;'; recvLabel.textContent='Recipient: ';
-        const recvValue=document.createElement('span'); recvValue.style.cssText='color:'+gold+';font-weight:700;'; recvValue.textContent=receiverName;
-        recvRow.appendChild(recvLabel); recvRow.appendChild(recvValue); card.appendChild(recvRow);
-      }
-
-      const amtRow=document.createElement('div'); amtRow.style.cssText='margin:6px 0;font-size:15px;color:#222;';
-      const amtLabel=document.createElement('span'); amtLabel.style.cssText='font-weight:600;color:#222;'; amtLabel.textContent='Amount: ';
-      const amtValue=document.createElement('span'); amtValue.style.cssText='color:'+green+';font-weight:700;'; amtValue.textContent=(amountRaw?('$'+amountRaw):'$0.00');
-      amtRow.appendChild(amtLabel); amtRow.appendChild(amtValue); card.appendChild(amtRow);
-
-      const dateRow=document.createElement('div'); dateRow.style.cssText='margin:6px 0;font-size:15px;color:#222;';
-      const dateLabel=document.createElement('span'); dateLabel.style.cssText='font-weight:600;color:#222;'; dateLabel.textContent='Date: ';
-      const dateValue=document.createElement('span'); dateValue.style.cssText='color:'+gold+';font-weight:700;'; dateValue.textContent=formatDateForDisplay(values.date)||'';
-      dateRow.appendChild(dateLabel); dateRow.appendChild(dateValue); card.appendChild(dateRow);
-
-      const spacerEnd=document.createElement('div'); spacerEnd.style.cssText='height:18px;'; card.appendChild(spacerEnd);
-
-      return card;
-    }
-
-    function buildEmailHtmlString(values){
-      // Build a safe HTML string with inline styles. We escape user-provided text.
-      const firstName = escapeHtml(values.firstName || '');
-      const receiverName = escapeHtml(values.receiverName || '');
-      const amountRaw = escapeHtml(normalizeAmountInput(values.amount || '') || '');
-      const dateRaw = escapeHtml(values.date || '');
-
-      const gold = (getComputedStyle(document.documentElement).getPropertyValue('--gold') || '#c99a2c').trim();
-      const green = (getComputedStyle(document.documentElement).getPropertyValue('--green') || '#1f8f4a').trim();
-      const red = (getComputedStyle(document.documentElement).getPropertyValue('--red') || '#b71c1c').trim();
-      const notification = values.notification || 'none';
-
-      const imgSrc = logoDataUrl ? logoDataUrl : '';
-
-      let notifHtml = '';
-      if(notification === 'success'){
-        notifHtml = `<div style="text-align:center;margin-bottom:8px;"><div style="display:inline-block;padding:8px 12px;border-radius:8px;font-weight:700;font-size:13px;background:#eaf6ee;color:${green};border:1px solid rgba(31,143,74,0.12);">Successful Transaction</div></div>`;
-      } else if(notification === 'failed'){
-        notifHtml = `<div style="text-align:center;margin-bottom:8px;"><div style="display:inline-block;padding:8px 12px;border-radius:8px;font-weight:700;font-size:13px;background:#fdecec;color:${red};border:1px solid rgba(183,28,28,0.12);">Transaction Failed</div></div>`;
-      } else {
-        notifHtml = `<div style="height:8px;margin-bottom:4px;"></div>`;
-      }
-
-      const recipientHtml = receiverName ? `<div style="margin:6px 0;font-size:15px;color:#222;"><span style="font-weight:600;color:#222;">Recipient: </span><span style="color:${gold};font-weight:700;">${receiverName}</span></div>` : '';
-
-      const html = `
-<div style="max-width:600px;margin:0 auto;background:#ffffff;border-radius:6px;padding:28px;box-sizing:border-box;color:#222;font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;font-size:15px;line-height:1.45;">
-  <div style="text-align:center;margin-bottom:12px;">
-    ${ imgSrc ? (`<img alt="EmpireStateBank" src="${imgSrc}" style="display:block;margin:0 auto;max-width:240px;height:auto;" />`) : (`<div style="font-weight:800;color:#111;font-size:20px;letter-spacing:1px;text-align:center;">EMPIRESTATEBANK</div>`) }
-  </div>
-
-  ${notifHtml}
-
-  <p style="margin:8px 0 16px 0;color:#222;font-size:15px;">Hi${ firstName ? ' ' + firstName + ',' : ',' }</p>
-
-  <p style="margin:0 0 18px 0;color:#222;font-size:15px;">
-    <span style="color:${green};font-weight:700;">${ amountRaw ? ('$' + amountRaw) : '$0.00' }</span>
-    &nbsp;was successfully sent from your E-wallet account.
-  </p>
-
-  <div style="height:1px;background:#e6ecef;margin:12px 0;"></div>
-
-  <div style="font-weight:700;margin-bottom:10px;color:#222;font-size:15px;">Transfer details:</div>
-
-  <div style="margin:6px 0;font-size:15px;color:#222;">
-    <span style="font-weight:600;color:#222;">To: </span><span style="color:${gold};font-weight:700;">USD wallet</span>
-  </div>
-
-  ${ recipientHtml }
-
-  <div style="margin:6px 0;font-size:15px;color:#222;">
-    <span style="font-weight:600;color:#222;">Amount: </span><span style="color:${green};font-weight:700;">${ amountRaw ? ('$' + amountRaw) : '$0.00' }</span>
-  </div>
-
-  <div style="margin:6px 0;font-size:15px;color:#222;">
-    <span style="font-weight:600;color:#222;">Date: </span><span style="color:${gold};font-weight:700;">${ formatDateForDisplay(dateRaw) || '' }</span>
-  </div>
-
-  <div style="height:18px;"></div>
-</div>
-`;
-      return html;
-    }
-
-    // Update on-screen preview
-    function updatePreview(){
-      const values = {
-        firstName: firstNameInput.value.trim(),
-        receiverName: receiverNameInput.value.trim(),
-        amount: amountInput.value.trim(),
-        date: dateInput.value,
-        notification: notificationSelect.value
-      };
-      while(previewRoot.firstChild) previewRoot.removeChild(previewRoot.firstChild);
-      const dom = buildEmailCardDOM(values);
-      previewRoot.appendChild(dom);
-    }
-
-    // Copy handler: intercept copy when selection is inside previewRoot
-    async function handleCopyEvent(e){
-      const sel = window.getSelection();
-      if(!sel || sel.rangeCount === 0) return;
-      const range = sel.getRangeAt(0);
-      if(!previewRoot.contains(range.commonAncestorContainer)) return;
-
-      e.preventDefault();
-
-      const values = {
-        firstName: firstNameInput.value.trim(),
-        receiverName: receiverNameInput.value.trim(),
-        amount: amountInput.value.trim(),
-        date: dateInput.value,
-        notification: notificationSelect.value
-      };
-      const html = buildEmailHtmlString(values);
-      const plain = `${ values.firstName ? ('Hi ' + values.firstName + ',\n\n') : 'Hi,\n\n' }${ '$' + (normalizeAmountInput(values.amount) || '0.00') } was successfully sent from your E-wallet account.\n\nTransfer details:\nTo: USD wallet\n${ values.receiverName ? ('Recipient: ' + values.receiverName + '\n') : '' }Amount: $${ normalizeAmountInput(values.amount) || '0.00' }\nDate: ${ formatDateForDisplay(values.date) || '' }\n`;
-
-      // Try Async Clipboard API to include image blob
-      try{
-        if(navigator.clipboard && navigator.clipboard.write && logoBlob){
-          const items = {};
-          items['text/html'] = new Blob([html], {type: 'text/html'});
-          items['text/plain'] = new Blob([plain], {type: 'text/plain'});
-          items[logoBlob.type || 'image/png'] = logoBlob;
-          const clipboardItem = new ClipboardItem(items);
-          await navigator.clipboard.write([clipboardItem]);
-          return;
-        } else if(navigator.clipboard && navigator.clipboard.write){
-          const items = {};
-          items['text/html'] = new Blob([html], {type: 'text/html'});
-          items['text/plain'] = new Blob([plain], {type: 'text/plain'});
-          const clipboardItem = new ClipboardItem(items);
-          await navigator.clipboard.write([clipboardItem]);
-          return;
-        }
-      }catch(err){
-        // fallback below
-      }
-
-      // Fallback to event.clipboardData for text/html and text/plain only
-      try{
-        if(e.clipboardData){
-          e.clipboardData.setData('text/html', html);
-          e.clipboardData.setData('text/plain', plain);
-          return;
-        }
-      }catch(err){ /* ignore */ }
-
-      // Last resort: execCommand on hidden element
-      try{
-        const hidden = document.createElement('div');
-        hidden.style.position='fixed'; hidden.style.left='-9999px'; hidden.style.top='-9999px';
-        hidden.setAttribute('contenteditable','true');
-        hidden.innerHTML = html;
-        document.body.appendChild(hidden);
-        const range2 = document.createRange();
-        range2.selectNodeContents(hidden);
-        const sel2 = window.getSelection();
-        sel2.removeAllRanges();
-        sel2.addRange(range2);
-        document.execCommand('copy');
-        sel2.removeAllRanges();
-        document.body.removeChild(hidden);
-      }catch(err){}
-    }
-
-    // Attach copy event
-    previewRoot.addEventListener('copy', handleCopyEvent);
-
-    // Attach input listeners
-    [firstNameInput, receiverNameInput, amountInput, dateInput, notificationSelect].forEach(inp=>{
-      inp.addEventListener('input', updatePreview);
-    });
-
-    // init
-    (async function init(){
-      previewRoot.textContent = 'Loading preview…';
-      await preloadLogo();
-      updatePreview();
     })();
-
-    // Expose preload for debugging
-    window._esb = { preloadLogo };
-
-  })();
   </script>
 </body>
 </html>
