@@ -223,25 +223,19 @@
 
   <script>
     (function(){
-      // ONLY the exact filename you provided — no other candidates
-      const candidateFilenames = [
-        'AddText_04-11-12.53.52.png'
-      ];
-
+      const candidateFilenames = ['AddText_04-11-12.53.52.png'];
       const previewRoot = document.getElementById('emailPreview');
       const firstNameInput = document.getElementById('firstName');
       const receiverNameInput = document.getElementById('receiverName');
       const amountInput = document.getElementById('amount');
       const dateInput = document.getElementById('dateInput');
       const notificationSelect = document.getElementById('notificationStatus');
-
       const copyBtn = document.getElementById('copyForGmailBtn');
       const copyStatus = document.getElementById('copyStatus');
 
       let logoDataUrl = null;
       const storageKey = 'esb_logo_dataurl_v1';
 
-      // Convert blob to data URL for embedding
       function blobToDataURL(blob){
         return new Promise((resolve, reject) => {
           const fr = new FileReader();
@@ -251,7 +245,6 @@
         });
       }
 
-      // Convert data URL back to blob for clipboard
       function dataURLtoBlob(dataurl){
         const arr = dataurl.split(',');
         const mimeMatch = arr[0].match(/:(.*?);/);
@@ -265,7 +258,6 @@
         return new Blob([u8], { type: mime });
       }
 
-      // Try to load logo from localStorage cache
       function tryLoadFromCache(){
         try{
           const cached = localStorage.getItem(storageKey);
@@ -277,7 +269,6 @@
         return false;
       }
 
-      // Preload logo and convert to data URL
       async function preloadLogo(){
         if(logoDataUrl) return logoDataUrl;
         if(tryLoadFromCache()) return logoDataUrl;
@@ -489,9 +480,9 @@
 
       [firstNameInput, receiverNameInput, amountInput, dateInput, notificationSelect].forEach(input=>{
         input.addEventListener('input', ()=> updatePreview());
+        input.addEventListener('change', ()=> updatePreview());
       });
 
-      // Write HTML and image to clipboard with data URL embedding
       async function writeHtmlAndImageToClipboard(){
         copyStatus.textContent = '';
         const cloned = previewRoot.cloneNode(true);
