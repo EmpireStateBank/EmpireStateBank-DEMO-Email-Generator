@@ -115,13 +115,14 @@
       margin:0 auto;
       background:var(--card-bg);
       border-radius:6px;
-      padding:28px;
+      padding:0;
       box-sizing:border-box;
       color:var(--neutral);
       font-size:15px;
       line-height:1.45;
       -webkit-user-select:text;
       user-select:text;
+      overflow:hidden;
     }
 
     .greeting{
@@ -202,7 +203,7 @@
       </div>
 
       <div style="font-size:12px;color:var(--muted);margin-top:8px">
-        The preview updates instantly as you type. Place your PNG named exactly <strong>AddText_04-11-12.53.52.png</strong> in the same folder as this file.
+        The preview updates instantly as you type.
       </div>
     </div>
 
@@ -210,7 +211,7 @@
       <div class="preview-label">
         <div>Live preview — select and copy the entire card below</div>
         <div class="copy-controls">
-          <button id="copyForGmailBtn" class="copy-btn" title="Tap to copy email + embedded logo (optimized for Gmail)">Copy for Gmail</button>
+          <button id="copyForGmailBtn" class="copy-btn" title="Tap to copy email (optimized for Gmail)">Copy for Gmail</button>
           <div id="copyStatus" class="copy-status" aria-live="polite"></div>
         </div>
       </div>
@@ -223,7 +224,6 @@
 
   <script>
     (function(){
-      const candidateFilenames = ['AddText_04-11-12.53.52.png'];
       const previewRoot = document.getElementById('emailPreview');
       const firstNameInput = document.getElementById('firstName');
       const receiverNameInput = document.getElementById('receiverName');
@@ -232,51 +232,6 @@
       const notificationSelect = document.getElementById('notificationStatus');
       const copyBtn = document.getElementById('copyForGmailBtn');
       const copyStatus = document.getElementById('copyStatus');
-
-      let logoDataUrl = null;
-      const storageKey = 'esb_logo_dataurl_v1';
-
-      function blobToDataURL(blob){
-        return new Promise((resolve, reject) => {
-          const fr = new FileReader();
-          fr.onload = function(){ resolve(fr.result); };
-          fr.onerror = function(e){ reject(e); };
-          fr.readAsDataURL(blob);
-        });
-      }
-
-      function tryLoadFromCache(){
-        try{
-          const cached = localStorage.getItem(storageKey);
-          if(cached && cached.startsWith('data:image/')){
-            logoDataUrl = cached;
-            return true;
-          }
-        }catch(e){}
-        return false;
-      }
-
-      async function preloadLogo(){
-        if(logoDataUrl) return logoDataUrl;
-        if(tryLoadFromCache()) return logoDataUrl;
-
-        for(const name of candidateFilenames){
-          try{
-            const resp = await fetch(name, {cache: 'no-store'});
-            if(!resp.ok) continue;
-            const blob = await resp.blob();
-            if(!blob || !blob.type.startsWith('image/')) continue;
-            const dataUrl = await blobToDataURL(blob);
-            logoDataUrl = dataUrl;
-            try { localStorage.setItem(storageKey, dataUrl); } catch(e){ /* ignore */ }
-            return logoDataUrl;
-          } catch(e){
-            continue;
-          }
-        }
-        logoDataUrl = null;
-        return null;
-      }
 
       function formatDateForDisplay(value){
         if(!value) return '';
@@ -292,7 +247,7 @@
         return s;
       }
 
-      function buildEmailCard(logoDataUrl, values){
+      function buildEmailCard(values){
         const firstName = values.firstName || '';
         const receiverName = values.receiverName || '';
         const amountRaw = normalizeAmountInput(values.amount || '');
@@ -310,92 +265,110 @@
           'margin:0 auto',
           'background:#ffffff',
           'border-radius:6px',
-          'padding:28px',
+          'padding:0',
           'box-sizing:border-box',
           'color:#222222',
           'font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
           'font-size:15px',
-          'line-height:1.45'
+          'line-height:1.45',
+          'overflow:hidden'
         ].join(';');
 
-        const logoWrap = document.createElement('div');
-        logoWrap.style.cssText = 'text-align:center;margin-bottom:20px;';
-        if(logoDataUrl){
-          const img = document.createElement('img');
-          img.alt = 'EmpireStateBank';
-          img.src = logoDataUrl;
-          img.style.cssText = 'display:block;margin:0 auto;max-width:400px;height:auto;width:100%;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,0.1);';
-          logoWrap.appendChild(img);
-        } else {
-          const text = document.createElement('div');
-          text.textContent = 'EMPIRESTATEBANK';
-          text.style.cssText = 'font-weight:800;color:#111;font-size:20px;letter-spacing:1px;text-align:center;';
-          logoWrap.appendChild(text);
-        }
-        card.appendChild(logoWrap);
+        // Header with company name and background
+        const header = document.createElement('div');
+        header.style.cssText = [
+          'background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)',
+          'padding:40px 28px',
+          'text-align:center',
+          'color:#ffffff'
+        ].join(';');
+
+        const companyName = document.createElement('div');
+        companyName.style.cssText = [
+          'font-size:36px',
+          'font-weight:900',
+          'letter-spacing:3px',
+          'margin:0',
+          'color:#ffffff',
+          'text-shadow:0 2px 4px rgba(0,0,0,0.3)'
+        ].join(';');
+        companyName.textContent = 'EMPIRESTATEBANK';
+        header.appendChild(companyName);
+
+        const tagline = document.createElement('div');
+        tagline.style.cssText = [
+          'font-size:12px',
+          'letter-spacing:1px',
+          'margin-top:8px',
+          'color:#c99a2c',
+          'font-weight:600'
+        ].join(';');
+        tagline.textContent = 'SECURE BANKING & TRANSFER SERVICES';
+        header.appendChild(tagline);
+
+        card.appendChild(header);
+
+        // Content wrapper
+        const content = document.createElement('div');
+        content.style.cssText = 'padding:28px;';
 
         if(notification === 'success' || notification === 'failed'){
           const notif = document.createElement('div');
           notif.style.cssText = [
             'display:inline-block',
-            'padding:8px 12px',
+            'padding:10px 16px',
             'border-radius:8px',
             'font-weight:700',
             'font-size:13px',
-            'margin:0 auto 12px auto',
-            'text-align:center'
+            'margin:0 auto 16px auto',
+            'text-align:center',
+            'width:100%',
+            'box-sizing:border-box'
           ].join(';');
 
           if(notification === 'success'){
-            notif.textContent = 'Successful Transaction';
+            notif.textContent = '✓ Successful Transaction';
             notif.style.background = '#eaf6ee';
             notif.style.color = greenColor;
-            notif.style.border = '1px solid rgba(31,143,74,0.12)';
+            notif.style.border = '1px solid rgba(31,143,74,0.2)';
           } else {
-            notif.textContent = 'Transaction Failed';
+            notif.textContent = '✕ Transaction Failed';
             notif.style.background = '#fdecec';
             notif.style.color = redColor;
-            notif.style.border = '1px solid rgba(183,28,28,0.12)';
+            notif.style.border = '1px solid rgba(183,28,28,0.2)';
           }
-          const wrap = document.createElement('div');
-          wrap.style.cssText = 'text-align:center;margin-bottom:8px;';
-          wrap.appendChild(notif);
-          card.appendChild(wrap);
-        } else {
-          const spacer = document.createElement('div');
-          spacer.style.cssText = 'height:8px;margin-bottom:4px;';
-          card.appendChild(spacer);
+          content.appendChild(notif);
         }
 
         const greeting = document.createElement('p');
-        greeting.style.cssText = 'margin:8px 0 16px 0;color:#222;font-size:15px;';
+        greeting.style.cssText = 'margin:0 0 16px 0;color:#222;font-size:15px;';
         greeting.textContent = 'Hi' + (firstName ? ' ' + firstName + ',' : ',');
-        card.appendChild(greeting);
+        content.appendChild(greeting);
 
         const txn = document.createElement('p');
-        txn.style.cssText = 'margin:0 0 18px 0;color:#222;font-size:15px;';
+        txn.style.cssText = 'margin:0 0 20px 0;color:#222;font-size:15px;line-height:1.6;';
         const amountSpan = document.createElement('span');
-        amountSpan.style.cssText = 'color:' + greenColor + ';font-weight:700;';
+        amountSpan.style.cssText = 'color:' + greenColor + ';font-weight:700;font-size:18px;';
         amountSpan.textContent = (amountRaw ? ('$' + amountRaw) : '$0.00');
         txn.appendChild(amountSpan);
         txn.appendChild(document.createTextNode(' was successfully sent from your E-wallet account.'));
-        card.appendChild(txn);
+        content.appendChild(txn);
 
         const hr = document.createElement('div');
-        hr.style.cssText = 'height:1px;background:#e6ecef;margin:12px 0;';
-        card.appendChild(hr);
+        hr.style.cssText = 'height:1px;background:#e6ecef;margin:20px 0;';
+        content.appendChild(hr);
 
         const tdHeading = document.createElement('div');
-        tdHeading.style.cssText = 'font-weight:700;margin-bottom:10px;color:#222;font-size:15px;';
-        tdHeading.textContent = 'Transfer details:';
-        card.appendChild(tdHeading);
+        tdHeading.style.cssText = 'font-weight:700;margin-bottom:14px;color:#222;font-size:15px;';
+        tdHeading.textContent = 'Transfer Details';
+        content.appendChild(tdHeading);
 
         const toRow = document.createElement('div');
-        toRow.style.cssText = 'margin:6px 0;font-size:15px;color:#222;';
+        toRow.style.cssText = 'margin:10px 0;font-size:15px;color:#222;display:flex;justify-content:space-between;';
 
         const toLabel = document.createElement('span');
-        toLabel.style.cssText = 'font-weight:600;color:#222;';
-        toLabel.textContent = 'To: ';
+        toLabel.style.cssText = 'font-weight:600;color:#555;';
+        toLabel.textContent = 'To:';
 
         const toValue = document.createElement('span');
         toValue.style.cssText = 'color:' + goldColor + ';font-weight:700;';
@@ -403,49 +376,60 @@
 
         toRow.appendChild(toLabel);
         toRow.appendChild(toValue);
-        card.appendChild(toRow);
+        content.appendChild(toRow);
 
         if(receiverName){
           const recvRow = document.createElement('div');
-          recvRow.style.cssText = 'margin:6px 0;font-size:15px;color:#222;';
+          recvRow.style.cssText = 'margin:10px 0;font-size:15px;color:#222;display:flex;justify-content:space-between;';
           const recvLabel = document.createElement('span');
-          recvLabel.style.cssText = 'font-weight:600;color:#222;';
-          recvLabel.textContent = 'Recipient: ';
+          recvLabel.style.cssText = 'font-weight:600;color:#555;';
+          recvLabel.textContent = 'Recipient:';
           const recvValue = document.createElement('span');
-          recvValue.style.cssText = 'color:' + goldColor + ';font-weight:700;';
+          recvValue.style.cssText = 'color:' + goldColor + ';font-weight:700;text-align:right;';
           recvValue.textContent = receiverName;
           recvRow.appendChild(recvLabel);
           recvRow.appendChild(recvValue);
-          card.appendChild(recvRow);
+          content.appendChild(recvRow);
         }
 
         const amtRow = document.createElement('div');
-        amtRow.style.cssText = 'margin:6px 0;font-size:15px;color:#222;';
+        amtRow.style.cssText = 'margin:10px 0;font-size:15px;color:#222;display:flex;justify-content:space-between;';
         const amtLabel = document.createElement('span');
-        amtLabel.style.cssText = 'font-weight:600;color:#222;';
-        amtLabel.textContent = 'Amount: ';
+        amtLabel.style.cssText = 'font-weight:600;color:#555;';
+        amtLabel.textContent = 'Amount:';
         const amtValue = document.createElement('span');
         amtValue.style.cssText = 'color:' + greenColor + ';font-weight:700;';
         amtValue.textContent = (amountRaw ? ('$' + amountRaw) : '$0.00');
         amtRow.appendChild(amtLabel);
         amtRow.appendChild(amtValue);
-        card.appendChild(amtRow);
+        content.appendChild(amtRow);
 
         const dateRow = document.createElement('div');
-        dateRow.style.cssText = 'margin:6px 0;font-size:15px;color:#222;';
+        dateRow.style.cssText = 'margin:10px 0;font-size:15px;color:#222;display:flex;justify-content:space-between;';
         const dateLabel = document.createElement('span');
-        dateLabel.style.cssText = 'font-weight:600;color:#222;';
-        dateLabel.textContent = 'Date: ';
+        dateLabel.style.cssText = 'font-weight:600;color:#555;';
+        dateLabel.textContent = 'Date:';
         const dateValue = document.createElement('span');
         dateValue.style.cssText = 'color:' + goldColor + ';font-weight:700;';
         dateValue.textContent = formatDateForDisplay(dateRaw) || '';
         dateRow.appendChild(dateLabel);
         dateRow.appendChild(dateValue);
-        card.appendChild(dateRow);
+        content.appendChild(dateRow);
 
-        const footerSpacer = document.createElement('div');
-        footerSpacer.style.cssText = 'height:18px;';
-        card.appendChild(footerSpacer);
+        card.appendChild(content);
+
+        // Footer
+        const footer = document.createElement('div');
+        footer.style.cssText = [
+          'background:#f8f9fa',
+          'padding:20px 28px',
+          'border-top:1px solid #e6ecef',
+          'text-align:center',
+          'font-size:12px',
+          'color:#666'
+        ].join(';');
+        footer.innerHTML = 'This is a secure transaction from <strong>EMPIRESTATEBANK</strong><br/>For support, contact us at support@empirestatebank.com';
+        card.appendChild(footer);
 
         return card;
       }
@@ -461,7 +445,7 @@
 
         while(previewRoot.firstChild) previewRoot.removeChild(previewRoot.firstChild);
 
-        const card = buildEmailCard(logoDataUrl, values);
+        const card = buildEmailCard(values);
         previewRoot.appendChild(card);
       }
 
@@ -470,7 +454,7 @@
         input.addEventListener('change', ()=> updatePreview());
       });
 
-      async function writeHtmlAndImageToClipboard(){
+      async function writeHtmlToClipboard(){
         copyStatus.textContent = '';
         const cloned = previewRoot.cloneNode(true);
 
@@ -486,7 +470,7 @@
             };
             const clipboardItem = new ClipboardItem(items);
             await navigator.clipboard.write([clipboardItem]);
-            copyStatus.textContent = 'Copied — paste into Gmail (tap paste)';
+            copyStatus.textContent = '✓ Copied — paste into Gmail (tap paste)';
             return true;
           } catch(err){
             console.debug('navigator.clipboard.write failed:', err);
@@ -512,7 +496,7 @@
           sel.removeAllRanges();
           document.body.removeChild(temp);
           if(success){
-            copyStatus.textContent = 'Copied (fallback) — paste into Gmail (tap paste)';
+            copyStatus.textContent = '✓ Copied (fallback) — paste into Gmail (tap paste)';
             return true;
           }
         } catch(e){
@@ -527,7 +511,7 @@
         copyBtn.disabled = true;
         copyBtn.textContent = 'Copying…';
         try {
-          const ok = await writeHtmlAndImageToClipboard();
+          const ok = await writeHtmlToClipboard();
           if(!ok){
             copyStatus.textContent = 'Could not copy. Try Chrome on Android and tap this button again.';
           }
@@ -552,7 +536,7 @@
             const clipboardItem = new ClipboardItem(items);
             await navigator.clipboard.write([clipboardItem]);
             e.preventDefault();
-            copyStatus.textContent = 'Copied — paste into Gmail';
+            copyStatus.textContent = '✓ Copied — paste into Gmail';
             setTimeout(()=>{ copyStatus.textContent = ''; }, 3000);
             return;
           }
@@ -562,7 +546,7 @@
             e.clipboardData.setData('text/html', fullHtml);
             e.clipboardData.setData('text/plain', plainText);
             e.preventDefault();
-            copyStatus.textContent = 'Copied (html only) — paste into Gmail';
+            copyStatus.textContent = '✓ Copied (html only) — paste into Gmail';
             setTimeout(()=>{ copyStatus.textContent = ''; }, 3000);
             return;
           }
@@ -573,7 +557,6 @@
 
       (async function init(){
         previewRoot.textContent = 'Loading preview…';
-        await preloadLogo();
         updatePreview();
 
         if(!(navigator.clipboard && window.ClipboardItem)){
